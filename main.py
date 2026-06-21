@@ -136,6 +136,7 @@ def create_patient(patient: PatientCreate):
         phone=patient.phone,
         address=patient.address,
         concern=patient.concern,
+        dateOfVisit=patient.dateOfVisit,
         payment=patient.payment,
         amount=patient.amount,
         followupDate=patient.followupDate,
