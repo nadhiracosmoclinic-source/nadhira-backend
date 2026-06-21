@@ -129,7 +129,14 @@ def get_patients():
             "name": p.name,
             "age": p.age,
             "gender": p.gender,
-            "phone": p.phone
+            "phone": p.phone,
+            "address": p.address,
+            "concern": p.concern,
+            "dateOfVisit": p.dateOfVisit,
+            "payment": p.payment,
+            "amount": p.amount,
+            "followupDate": p.followupDate,
+            "registeredAt": p.registeredAt
         })
 
     db.close()
