@@ -16,6 +16,8 @@ class Patient(Base):
 
     concern = Column(String)
 
+    dateOfVisit = Column(String)
+
     payment = Column(String)
     amount = Column(Float)
 
