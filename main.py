@@ -101,6 +101,18 @@ def home():
         "app": "Nadhira Skin Clinic"
     }
 
+@app.get("/fixdb")
+def fixdb():
+    db = SessionLocal()
+
+    db.execute(text('ALTER TABLE patients ADD COLUMN IF NOT EXISTS "dateOfVisit" VARCHAR'))
+    db.execute(text('ALTER TABLE patients ADD COLUMN IF NOT EXISTS "followupDate" VARCHAR'))
+    db.execute(text('ALTER TABLE patients ADD COLUMN IF NOT EXISTS "registeredAt" VARCHAR'))
+
+    db.commit()
+    db.close()
+
+    return {"status": "fixed"}
 
 @app.get("/patients")
 def get_patients():
