@@ -38,6 +38,7 @@ class PatientCreate(BaseModel):
     payment: str = ""
     amount: float = 0
     followupDate: str = ""
+    dateOfVisit: str = ""
     registeredAt: str = ""
     
 class PrescriptionCreate(BaseModel):
