@@ -15,7 +15,7 @@ class Patient(Base):
     address = Column(String)
 
     concern = Column(String)
-
+    
     dateOfVisit = Column(String)
 
     payment = Column(String)
