@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
 from sqlalchemy import text
+from sqlalchemy.orm import Session
 
 from database import engine, SessionLocal
 from models import (
@@ -36,10 +36,10 @@ class PatientCreate(BaseModel):
     phone: str
     address: str = ""
     concern: str = ""
+    dateOfVisit: str = ""
     payment: str = ""
     amount: float = 0
     followupDate: str = ""
-    dateOfVisit: str = ""
     registeredAt: str = ""
     
 class PrescriptionCreate(BaseModel):
@@ -94,6 +94,25 @@ class AppointmentCreate(BaseModel):
 Base.metadata.create_all(bind=engine)
 
 
+def ensure_schema():
+    if engine.dialect.name != "sqlite":
+        return
+
+    with engine.begin() as conn:
+        columns = {
+            row[1]
+            for row in conn.execute(text("PRAGMA table_info(patients)"))
+        }
+
+        if "dateOfVisit" not in columns:
+            conn.execute(
+                text('ALTER TABLE patients ADD COLUMN "dateOfVisit" VARCHAR')
+            )
+
+
+ensure_schema()
+
+
 @app.get("/")
 def home():
     return {
@@ -101,18 +120,6 @@ def home():
         "app": "Nadhira Skin Clinic"
     }
 
-@app.get("/fixdb")
-def fixdb():
-    db = SessionLocal()
-
-    db.execute(text('ALTER TABLE patients ADD COLUMN IF NOT EXISTS "dateOfVisit" VARCHAR'))
-    db.execute(text('ALTER TABLE patients ADD COLUMN IF NOT EXISTS "followupDate" VARCHAR'))
-    db.execute(text('ALTER TABLE patients ADD COLUMN IF NOT EXISTS "registeredAt" VARCHAR'))
-
-    db.commit()
-    db.close()
-
-    return {"status": "fixed"}
 
 @app.get("/patients")
 def get_patients():
@@ -193,6 +200,7 @@ def update_patient(patient_id: str, patient: PatientCreate):
     p.phone = patient.phone
     p.address = patient.address
     p.concern = patient.concern
+    p.dateOfVisit = patient.dateOfVisit
     p.payment = patient.payment
     p.amount = patient.amount
     p.followupDate = patient.followupDate
@@ -249,6 +257,7 @@ def get_patient(patient_id: str):
         "phone": p.phone,
         "address": p.address,
         "concern": p.concern,
+        "dateOfVisit": p.dateOfVisit,
         "payment": p.payment,
         "amount": p.amount,
         "followupDate": p.followupDate,
